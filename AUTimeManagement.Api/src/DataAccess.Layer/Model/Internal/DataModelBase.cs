@@ -2,7 +2,7 @@
 
 internal class DataModelBase
 {
-    Guid Id { get; set; }
-    DateTime Created { get; set; }
-    DateTime Updated { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public DateTime Created { get; set; }
+    public DateTime Updated { get; set; }
 }
