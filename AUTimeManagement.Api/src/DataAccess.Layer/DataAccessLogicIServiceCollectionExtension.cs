@@ -8,7 +8,5 @@ public static class DataAccessLogicIServiceCollectionExtension
     {
         return services;
     }
-
-    public static ISer
 }
 
