@@ -14,7 +14,7 @@ public class UnitTest1
         services.AddDataAccessLayer(x =>
         {
             x.Database = DataAccessOptions.DatabaseType.InMemory;
-            x.ConnectionString = "TestDb";
+            x.ConnectionString = Guid.NewGuid().ToString();
         });
 
         var provider = services.BuildServiceProvider();
