@@ -1,8 +1,13 @@
 version: '3.4'
 
 services:
+  management.db:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    
   management.api:
-    image: ${DOCKER_REGISTRY-}managementapi
+    image: elpatrondaniel/autimelogger.api:latest
     build:
       context: .
       dockerfile: src/Management.Api/Dockerfile
+    depends_on:
+      - management.db

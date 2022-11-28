@@ -59,8 +59,8 @@ public static class ApiWebAppExtensions
         }
         else
         {
-            bool isEmpty = context.Users.Any();
-            if (isEmpty)
+            var check = await userManager.FindByEmailAsync("root@root.com");
+            if (check is null)
             {
                 string? password = app.Configuration["SecurityDbConfig:rootPassword"];
                 if (string.IsNullOrEmpty(password))

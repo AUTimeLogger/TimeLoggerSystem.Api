@@ -1,5 +1,4 @@
-﻿using AUTimeManagement.Api.Management.Api.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using AUTimeManagement.Api.Management.Api.Security.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -11,9 +10,9 @@ namespace AUTimeManagement.Api.Management.Api.Controllers;
 public class UsersController : ControllerBase
 {
 
-    private readonly UserManager<IdentityUser> userManager;
+    private readonly UserManager<ApplicationUser> userManager;
 
-    public UsersController(UserManager<IdentityUser> userManager)
+    public UsersController(UserManager<ApplicationUser> userManager)
     {
         this.userManager = userManager;
     }
@@ -37,7 +36,7 @@ public class UsersController : ControllerBase
     {
         var pw = model.Password.Trim();
 
-        var user = new IdentityUser { UserName = model.UserName, Email = model.Email };
+        var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
         var result = await userManager.CreateAsync(user, pw);
 
 

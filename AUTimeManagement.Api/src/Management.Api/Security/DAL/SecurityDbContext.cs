@@ -9,7 +9,6 @@ namespace AUTimeManagement.Api.Management.Api.Security.DAL;
 public class SecurityDbContext : IdentityDbContext<ApplicationUser>
 {
     private readonly IOptions<DbConfigurationOptions> options;
-
     public SecurityDbContext(IOptions<DbConfigurationOptions> options)
     {
         this.options = options ?? throw new ArgumentNullException(nameof(options));
@@ -24,7 +23,6 @@ public class SecurityDbContext : IdentityDbContext<ApplicationUser>
         {
             throw new ArgumentNullException("ConnectionString");
         }
-
         switch (db)
         {
             case DbConfigurationOptions.DatabaseType.InMemory:
