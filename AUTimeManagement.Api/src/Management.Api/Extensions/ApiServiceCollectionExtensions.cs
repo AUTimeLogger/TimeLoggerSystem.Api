@@ -1,9 +1,9 @@
 ﻿using AUTimeManagement.Api.Business.Logic;
+using AUTimeManagement.Api.Management.Api.Configuration;
 using AUTimeManagement.Api.Management.Api.Security.DAL;
 using AUTimeManagement.Api.Management.Api.Security.Model;
+using AUTimeManagement.Api.Management.Api.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -25,7 +25,9 @@ public static class ApiServiceCollectionExtensions
 
         services.AddBusinessLogic(configuration);
 
+        services.AddAutoMapper(typeof(ApiServiceCollectionExtensions));
 
+        services.AddTransient<ITokenGenerator, DefaultTokenGenerator>();
 
         services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -37,31 +39,39 @@ public static class ApiServiceCollectionExtensions
 
     private static void AddCustomSecurity(this IServiceCollection services, IConfiguration configuration)
     {
-        //TODO add configuration...
+        services.Configure<DbConfigurationOptions>(configuration.GetSection(DbConfigurationOptions.SectionName));
 
-        services.AddDbContext<SecurityDbContext>(options => options.UseInMemoryDatabase("SecDb"));
+        var jwt = configuration.GetRequiredSection(TokenGenerationOption.SectionName);
+
+        services.Configure<TokenGenerationOption>(jwt);
+
+        string issuer = jwt.GetValue<string>("ValidIssuer");
+        string audience = jwt.GetValue<string>("ValidAudience");
+        string key = jwt.GetValue<string>("SigningSecret");
+
+        services.AddDbContext<SecurityDbContext>();
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<SecurityDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddAuthentication(options=>
+        services.AddAuthentication(o =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(o =>
+            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddJwtBearer(o =>
         {
             o.SaveToken = true;
             o.RequireHttpsMetadata = false;
             o.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidIssuer = configuration["Jwt:Issuer"],
-                ValidAudience = configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey
-                (Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = false,
+                ValidIssuer = issuer,
+                ValidAudience = audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true
             };
         });

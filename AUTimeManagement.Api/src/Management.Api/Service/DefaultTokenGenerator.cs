@@ -26,7 +26,7 @@ public sealed class DefaultTokenGenerator : ITokenGenerator
 
     public async Task<string> GetToken(ApplicationUser user)
     {
-        if(user is null)
+        if (user is null)
         {
             throw new ArgumentNullException(nameof(user));
         }
@@ -39,10 +39,12 @@ public sealed class DefaultTokenGenerator : ITokenGenerator
 
         List<Claim> claims = new List<Claim>()
         {
-            new Claim("Id", Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+            new Claim("Id", user.Id),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.UserName),
         };
         bool isAdmin = await isAdminTask;
         if (isAdmin)
@@ -63,7 +65,7 @@ public sealed class DefaultTokenGenerator : ITokenGenerator
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
-
-        return jwtToken;
+        var stringToken = tokenHandler.WriteToken(token);
+        return stringToken;
     }
 }

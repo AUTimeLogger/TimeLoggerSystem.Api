@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  management.api:
+    image: ${DOCKER_REGISTRY-}managementapi
+    build:
+      context: .
+      dockerfile: src/Management.Api/Dockerfile

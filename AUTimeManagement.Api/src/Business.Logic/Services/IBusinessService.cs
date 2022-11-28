@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace AUTimeManagement.Api.Business.Logic.Services;
 
-namespace AUTimeManagement.Api.Business.Logic.Services
+public interface IBusinessService
 {
-    public interface IBusinessService
-    {
-        IProjectService Projects { get; }
-    }
+    IProjectService Projects { get; }
+    IReportService Report { get; }
 }

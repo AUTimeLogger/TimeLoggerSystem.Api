@@ -1,10 +1,5 @@
-﻿using AUTimeManagement.Api.DataAccess.Layer.Model;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AUTimeManagement.Api.Business.Logic.Models;
+using CreateWorkModel = AUTimeManagement.Api.Business.Logic.Models.CreateWorkModel;
 
 namespace AUTimeManagement.Api.Business.Logic.Services
 {
@@ -15,13 +10,17 @@ namespace AUTimeManagement.Api.Business.Logic.Services
         /// </summary>
         /// <param name="id">Id of the project</param>
         /// <returns>A project type</returns>
-        Task FindAsync(object id);
-        
+        Task<ProjectModel?> FindAsync(Guid id);
+
         /// <summary>
         /// Returns all projects in DB.
         /// </summary>
         /// <returns></returns>
-        Task GetAsync();
+        Task<ICollection<ProjectModel>> GetAsync();
+
+        Task<Guid> AddProject(string projectName);
+
+        Task AddUser(Guid projectId, Guid userId);
 
         /// <summary>
         /// Updates a project
@@ -29,14 +28,14 @@ namespace AUTimeManagement.Api.Business.Logic.Services
         /// <param name="id">Id of a project</param>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task UpdateAsync(object id, object model);
+        Task UpdateAsync(Guid id, UpdateProjectModel model);
 
         /// <summary>
         /// Deletes a project
         /// </summary>
         /// <param name="id">Id of a project</param>
         /// <returns></returns>
-        Task DeleteAsync(object id);
+        Task DeleteAsync(Guid id);
 
         /// <summary>
         /// Adds a work unit to a project.
@@ -44,6 +43,6 @@ namespace AUTimeManagement.Api.Business.Logic.Services
         /// <param name="id">Id of a project</param>
         /// <param name="work"> work unit</param>
         /// <returns></returns>
-        Task AddWork(object id, Work work);
+        Task AddWork(Guid projectid, Guid userId, CreateWorkModel work);
     }
 }

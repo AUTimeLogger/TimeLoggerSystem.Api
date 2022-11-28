@@ -2,11 +2,6 @@
 using AUTimeManagement.Api.DataAccess.Layer.Model;
 using AUTimeManagement.Api.DataAccess.Layer.Model.Internal;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AUTimeManagement.Api.DataAccess.Layer.Service;
 
@@ -74,16 +69,38 @@ internal sealed class DefaultDataWriter : IDataWriter
         return projectId;
     }
 
+    public async Task DeleteProject(Guid projectId)
+    {
+        var entity = await context.Projects.FindAsync(projectId);
+        if (entity is not null)
+        {
+            context.Projects.Remove(entity);
+        }
+        await SaveChanges().ConfigureAwait(false);
+    }
+
+    public async Task UpdateProject(Guid projectId, string projectName)
+    {
+        var entity = await context.Projects.FindAsync(projectId);
+        if (entity is not null)
+        {
+            entity.ProjectName = projectName;
+            context.Projects.Update(entity);
+        }
+
+        await SaveChanges().ConfigureAwait(false);
+    }
+
     private async Task SaveChanges()
     {
-        var enties = context.ChangeTracker.Entries().Where(e=>e.State == EntityState.Added || e.State == EntityState.Modified);
+        var enties = context.ChangeTracker.Entries().Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
         foreach (var entry in enties)
         {
-            if(entry.Entity is DataModelBase)
+            if (entry.Entity is DataModelBase)
             {
-                var e = (DataModelBase)entry.Entity;    var time = DateTime.UtcNow;
-                if(entry.State == EntityState.Added)
+                var e = (DataModelBase)entry.Entity; var time = DateTime.UtcNow;
+                if (entry.State == EntityState.Added)
                 {
                     e.Created = time;
                 }

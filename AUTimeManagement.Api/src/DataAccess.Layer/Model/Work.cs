@@ -1,9 +1,4 @@
 ﻿using AUTimeManagement.Api.DataAccess.Layer.Model.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AUTimeManagement.Api.DataAccess.Layer.Model;
 
@@ -16,6 +11,38 @@ public class Work
     public int Duration { get; set; }
     public string Comment { get; set; }
     public DateTime WorkDate { get; set; }
+
+    public static string? GetHeader(string type)
+    {
+        switch (type)
+        {
+            case "csv":
+                return "ProjectId;UserId;StartTime;EndTime;Duration;Comment;WorkDate";
+            default:
+                throw new InvalidOperationException();
+        }
+    }
+
+    public override string? ToString()
+    {
+        return ToString("csv");
+    }
+
+    public string? ToString(string type)
+    {
+        switch (type)
+        {
+            case "csv":
+                return ToCsv();
+            default:
+                throw new InvalidOperationException();
+        }
+    }
+
+    private string ToCsv()
+    {
+        return $"{ProjectId};{UserId};{StartTime};{EndTime};{Duration};{Comment};{WorkDate}";
+    }
 }
 
 internal static class WorkExtensions

@@ -1,5 +1,7 @@
-﻿using AUTimeManagement.Api.Management.Api.Security.Model;
+﻿using AUTimeManagement.Api.Management.Api.Models;
+using AUTimeManagement.Api.Management.Api.Security.Model;
 using AUTimeManagement.Api.Management.Api.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -26,9 +28,9 @@ public class AccessController : ControllerBase
     public async Task<IActionResult> OnLogin([FromBody] LoginRequest login)
     {
         var user = await mg.FindByNameAsync(login.Username);
-        if(user is not null)
+        if (user is not null)
         {
-            if(await mg.CheckPasswordAsync(user, login.Password))
+            if (await mg.CheckPasswordAsync(user, login.Password))
             {
                 var token = await tokenGenerator.GetToken(user);
                 await mg.SetAuthenticationTokenAsync(user, "DefaultJWTProvider", "jwt", token).ConfigureAwait(false);
@@ -44,7 +46,9 @@ public class AccessController : ControllerBase
     public async Task<IActionResult> OnLogout()
     {
         var user = await mg.GetUserAsync(User);
-        await mg.RemoveAuthenticationTokenAsync(user, "DefaultJWTProvider", "jwt").ConfigureAwait(false);
+
+        if (user is not null)
+            await mg.RemoveAuthenticationTokenAsync(user, "DefaultJWTProvider", "jwt").ConfigureAwait(false);
 
         return NoContent();
     }

@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="DataAccess.Layer.UnitTest" />
+		<InternalsVisibleTo Include="Management.Api" />
 	</ItemGroup>
 
 	<ItemGroup>

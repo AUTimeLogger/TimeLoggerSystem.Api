@@ -28,11 +28,11 @@ internal class DataContext : DbContext
 		{
 			case DataAccessOptions.DatabaseType.SQL:
 				optionsBuilder.UseSqlServer(connStr, o =>
-					o.MigrationsAssembly(this.GetType().Assembly.FullName));
+					o.MigrationsAssembly("Management.Api"));
 				break;
 			case DataAccessOptions.DatabaseType.Postgres:
 				optionsBuilder.UseNpgsql(connStr, o =>
-					o.MigrationsAssembly(this.GetType().Assembly.FullName));
+					o.MigrationsAssembly("Management.Api"));
 				break;
 			case DataAccessOptions.DatabaseType.InMemory:
 				optionsBuilder.UseInMemoryDatabase(connStr!);

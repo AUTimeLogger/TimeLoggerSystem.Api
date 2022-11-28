@@ -1,5 +1,6 @@
 ﻿using AUTimeManagement.Api.DataAccess.Layer.Context;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AUTimeManagement.Api.DataAccess.Layer;
@@ -11,12 +12,20 @@ public static class DataAccessLogicWebAppExtensions
         using var scope = app.ApplicationServices.CreateScope();
         using var context = scope.ServiceProvider.GetRequiredService<DataContext>();
 
-        if (isDevelopment)
+        bool relational = context.Database.IsRelational();
+
+        if (isDevelopment && !relational)
         {
             context.Database.EnsureDeleted();
         }
-
-        context.Database.EnsureCreated();
+        if (!relational)
+        {
+            context.Database.EnsureCreated();
+        }
+        else
+        {
+            context.Database.Migrate();
+        }
 
         return app;
     }
