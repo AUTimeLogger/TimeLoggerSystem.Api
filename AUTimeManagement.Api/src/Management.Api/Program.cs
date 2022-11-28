@@ -7,6 +7,8 @@ builder.AddServices();
 
 var app = builder.Build();
 
+await app.UseDbSeedAsync();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

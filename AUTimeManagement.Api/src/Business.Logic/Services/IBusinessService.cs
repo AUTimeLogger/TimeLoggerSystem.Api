@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AUTimeManagement.Api.Business.Logic.Services
 {
-    internal interface IBusinessService
+    public interface IBusinessService
     {
     }
 }
