@@ -7,6 +7,8 @@ builder.AddServices();
 
 var app = builder.Build();
 
+await app.UseDbSeedAsync();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -17,7 +19,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
-app.MapControllers();
+app.MapControllers().RequireAuthorization();
 
 app.Run();
